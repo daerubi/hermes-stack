@@ -415,13 +415,7 @@ function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clear
 function copyText(v){(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast('📋 Copied')).catch(()=>{const i=document.createElement('textarea');i.value=v;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();toast('📋 Copied')})}
 function genStr(n){const cs='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';const b=new Uint8Array(n);crypto.getRandomValues(b);return Array.from(b,x=>cs[x%cs.length]).join('')}
 function templateRepo(){
-  const h=location.hostname||'';
-  if(h.endsWith('.github.io')&&h.split('.').length>2){
-    const owner=h.split('.')[0];
-    const repo=(location.pathname.split('/').filter(Boolean)[0])||'hermes-stack';
-    return owner+'/'+repo;
-  }
-  return 'daerubi/hermes-stack';
+  return 'Godde3s/hermes-stack';
 }
 function u8ToB64(u){let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)}
 function b64ToU8(s){const b=atob(s.replace(/\s/g,''));const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
