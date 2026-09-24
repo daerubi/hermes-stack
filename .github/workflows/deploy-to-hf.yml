@@ -38,6 +38,19 @@ jobs:
       - name: 📦 Install huggingface_hub
         run: pip install --quiet "huggingface_hub>=0.30"
 
+      - name: 🔍 Debug: Check environment
+        run: |
+          echo "Checking required secrets..."
+          echo "HF_TOKEN set: ${{ secrets.HF_TOKEN != '' }}"
+          echo "HF_USERNAME set: ${{ secrets.HF_USERNAME != '' }}"
+          echo "HF_SPACE_NAME set: ${{ secrets.HF_SPACE_NAME != '' }}"
+          echo "Space directory contents:"
+          ls -la space/
+          echo "Python version:"
+          python --version
+          echo "Installed packages:"
+          pip list | grep -i huggingface
+
       - name: 🛠️ Provision & deploy the Space
         env:
           DRY_RUN: ${{ inputs.dry_run }}

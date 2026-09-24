@@ -127,7 +127,7 @@ def main() -> int:
     url = api.create_repo(
         repo_id=repo_id,
         repo_type="space",
-        sdk="docker",
+        space_sdk="docker",
         private=PRIVATE_SPACE,
         exist_ok=True,
         space_hardware="cpu-basic",
@@ -231,7 +231,8 @@ if __name__ == "__main__":
         sys.exit(main())
     except SystemExit:
         raise
-    except Exception:
+    except Exception as e:
+        import traceback
         traceback.print_exc()
         print("::error:: Unexpected failure — see traceback above.")
         sys.exit(1)
