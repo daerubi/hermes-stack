@@ -129,7 +129,7 @@ def main() -> int:
         url = api.create_repo(
             repo_id=repo_id,
             repo_type="space",
-            space_sdk="docker",
+            space_sdk="gradio",
             private=PRIVATE_SPACE,
             exist_ok=True,
         )
@@ -174,13 +174,14 @@ def main() -> int:
         print(f"      - {key}: {key in ('BACKUP_REPO',) and val or '✓ set'}")
 
     # -------------------------------------------------------- upload
-    print("[4/5] Uploading space/ files (Dockerfile, Caddyfile, hfkit)…")
+    print("[4/5] Uploading Gradio app files…")
     space_dir = Path(__file__).resolve().parent.parent / "space"
     api.upload_folder(
         folder_path=str(space_dir),
         repo_id=repo_id,
         repo_type="space",
         commit_message="deploy: hermes-stack via GitHub Actions",
+        allow_patterns=["README.md", "app.py", "requirements.txt"],
     )
     print("      -> uploaded. Build started on Hugging Face…")
 

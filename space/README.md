@@ -3,11 +3,12 @@ title: AI Workspace
 emoji: 🛰️
 colorFrom: yellow
 colorTo: brown
-sdk: docker
+sdk: gradio
+app_file: app.py
 app_port: 7860
 pinned: false
 license: mit
-short_description: Personal AI agent workspace — dashboard, API & backups
+short_description: Free Gradio chat Space powered by Hugging Face Inference
 secrets:
   - name: TELEGRAM_BOT_TOKEN
     description: "Telegram bot token from @BotFather (optional — enables the Telegram gateway)."
@@ -41,17 +42,13 @@ secrets:
     description: "Optional bash snippet executed at every boot (after services are up)."
 ---
 
-**AI Workspace** — one free Hugging Face Space that runs a complete personal
-AI stack:
+This Space runs the free Gradio edition of Hermes Stack. It uses the
+`HERMES_MODEL` variable and the `HF_TOKEN` secret with Hugging Face Inference.
 
-| Path | What it is |
-|---|---|
-| `/` | Web dashboard (manage models & API keys) |
-| `/v1` | OpenAI-compatible API of the router |
-| `/hermes/` | Agent web dashboard (basic auth) |
-| `/hermes-api/v1` | Agent as an OpenAI-compatible API |
-| `/healthz` | Keep-alive health endpoint |
+Set these values in **Settings -> Variables and secrets**:
 
-State is backed up hourly to a **private** dataset repo and restored
-automatically on every restart. See the full guide:
-https://github.com/daerubi/hermes-stack
+- `HF_TOKEN`: a Hugging Face token allowed to use Inference Providers.
+- `HERMES_MODEL`: a supported model, for example `Qwen/Qwen2.5-7B-Instruct`.
+
+This Gradio edition does not run the Docker-only Hermes gateway, 9Router,
+OmniRouter, Caddy, Telegram gateway, or backup daemon.
