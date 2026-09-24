@@ -115,7 +115,9 @@ def main() -> int:
         login = who.get("name", "?")
         print(f"[auth] Hugging Face token OK — logged in as: {login}")
         if login != hf_user:
-            print(f"::warning:: HF_USERNAME ('{hf_user}') != token owner ('{login}') — using '{hf_user}' as repo owner.")
+            print(f"::error:: HF_USERNAME ('{hf_user}') does not match the token owner ('{login}').")
+            print(f"::error:: Set HF_USERNAME to '{login}' or use a token owned by '{hf_user}'.")
+            return 1
     except Exception as e:
         print(f"::error:: HF token invalid or expired: {e}")
         print("::error:: Create a WRITE token at https://huggingface.co/settings/tokens and update the HF_TOKEN secret.")
@@ -123,14 +125,18 @@ def main() -> int:
 
     # ------------------------------------------------------ create repos
     print(f"[1/5] Creating (or reusing) Space {repo_id} (sdk=docker, cpu-basic, {'private' if PRIVATE_SPACE else 'public'})…")
-    url = api.create_repo(
-        repo_id=repo_id,
-        repo_type="space",
-        space_sdk="docker",
-        private=PRIVATE_SPACE,
-        exist_ok=True,
-        space_hardware="cpu-basic",
-    )
+    try:
+        url = api.create_repo(
+            repo_id=repo_id,
+            repo_type="space",
+            space_sdk="docker",
+            private=PRIVATE_SPACE,
+            exist_ok=True,
+            space_hardware="cpu-basic",
+        )
+    except Exception as e:
+        print(f"::error:: Could not create or reuse Space {repo_id}: {type(e).__name__}: {e}")
+        return 1
     print(f"      -> {url}")
 
     print(f"[1/5] Creating (or reusing) private backup dataset {backup_repo}…")
