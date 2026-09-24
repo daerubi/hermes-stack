@@ -47,7 +47,7 @@ jobs:
       - name: Provision and deploy the Space
         env:
           DRY_RUN: ${{ inputs.dry_run || false }}
-          PRIVATE_SPACE: ${{ github.event_name == 'push' && 'true' || inputs.private_space || false }}
+          PRIVATE_SPACE: ${{ inputs.private_space || false }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
           HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}

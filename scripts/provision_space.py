@@ -135,6 +135,9 @@ def main() -> int:
             space_hardware="cpu-basic",
         )
     except Exception as e:
+        if "402" in str(e) and PRIVATE_SPACE:
+            print("::error:: Hugging Face rejected the private Space (HTTP 402). Free accounts must deploy a public Space; uncheck 'private' or upgrade the Hugging Face plan.")
+            return 1
         print(f"::error:: Could not create or reuse Space {repo_id}: {type(e).__name__}: {e}")
         return 1
     print(f"      -> {url}")
