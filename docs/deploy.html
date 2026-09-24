@@ -446,8 +446,8 @@ async function gh(path,opts={}){
   if(!r.ok){
     let d={};try{d=await r.json()}catch(_){}
     const en={401:'The GitHub token is invalid or expired.',403:'Access denied — the repo and workflow scopes are required (or you hit a rate limit).',404:'Repo or path not found — check the repo name.',422:'Request rejected: '+((d.message||'')+(d.errors?' '+d.errors.map(e=>e.message||'').join(', '):''))};
-    const e=new Error('GitHub '+r.status+': '+(en[r.status]||d.message||r.statusText));
-    e.status=r.status;throw e;
+    const e=new Error('GitHub '+r.status+' at '+path+': '+(en[r.status]||d.message||r.statusText));
+    e.status=r.status;e.githubMessage=d.message||'';throw e;
   }
   return r.status===204?null:r.json();
 }
@@ -638,7 +638,7 @@ async function deploy(){
       await gh('/repos/'+tpl+'/generate',{method:'POST',body:JSON.stringify({name:S.repoName,description:'🤖 Hermes Agent + 9Router + OmniRouter on a free Hugging Face Space — deployed via web wizard',private:false,include_all_branches:false})});
       logC('repo created ✓','ok');
     }catch(e){
-      if(e.status===422||/already/i.test(e.message)){
+      if(/already exists/i.test(e.githubMessage||e.message)){
         logC('repo already exists — reusing it','warn');
         await gh('/repos/'+repoFull);
       }else throw e;
