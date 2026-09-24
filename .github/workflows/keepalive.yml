@@ -1,7 +1,7 @@
 name: 💓 Keep Space Awake
 
 # Free HF Spaces fall asleep after ~48h without traffic. This workflow
-# pings the Space's /healthz endpoint every 10 minutes and, if the Space
+# pings the Space's root endpoint every 10 minutes and, if the Space
 # is SLEEPING, restarts it via the HF API. Zero dependencies (curl only).
 #
 # Requirements: repo secrets HF_USERNAME + HF_SPACE_NAME (the web wizard
@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   ping:
-    name: Ping /healthz
+    name: Ping Gradio Space
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -39,7 +39,7 @@ jobs:
             exit 0
           fi
           REPO_ID="${HF_USERNAME}/${HF_SPACE_NAME}"
-          APP_URL="https://${HF_USERNAME}-${HF_SPACE_NAME}.hf.space/healthz"
+          APP_URL="https://${HF_USERNAME}-${HF_SPACE_NAME}.hf.space/"
           CODE=$(curl -s -o /dev/null -w "%{http_code}" \
                   --max-time 30 -A "hermes-stack-keepalive/1.0" "$APP_URL" || echo "000")
           echo "healthz -> HTTP ${CODE}"
