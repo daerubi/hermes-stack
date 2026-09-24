@@ -672,7 +672,7 @@ async function deploy(){
     }
     /* 3 — dispatch workflow */
     logC('STEP 4/6 · Launching GitHub Actions (deploy-to-hf.yml)','st');
-    await gh('/repos/'+repoFull+'/actions/workflows/deploy-to-hf.yml/dispatches',{method:'POST',body:JSON.stringify({ref:'main',inputs:{dry_run:'false',private_space:priv?'true':'false'}})});
+    await gh('/repos/'+repoFull+'/actions/workflows/deploy-to-hf.yml/dispatches',{method:'POST',body:JSON.stringify({ref:'main',inputs:{dry_run:false,private_space:priv}})});
     logC('workflow dispatched ✓','ok');
     logC('👀 https://github.com/'+repoFull+'/actions','in');
     /* 4 — wait for the run */
