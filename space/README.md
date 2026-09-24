@@ -54,4 +54,4 @@ AI stack:
 
 State is backed up hourly to a **private** dataset repo and restored
 automatically on every restart. See the full guide:
-https://github.com/daerubi/hermes-stack
+https://github.com/Godde3s/hermes-stack

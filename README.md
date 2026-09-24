@@ -5,13 +5,13 @@
 **Turn one free Hugging Face Space into a real personal AI server:**
 [Hermes Agent](https://github.com/NousResearch/hermes-agent) + [9Router](https://github.com/decolua/9router) + [OmniRouter](https://github.com/Godde3s/omnirouter) — with a web dashboard, an OpenAI-compatible API, Telegram control, hourly backups and auto keep-alive.
 
-[![Deploy](https://img.shields.io/badge/Deploy%20in%205%20min-Wizard_F5B301?style=for-the-badge&labelColor=201A14)](https://daerubi.github.io/hermes-stack/deploy.html)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/daerubi/hermes-stack/deploy-to-hf.yml?style=flat-square&label=deploy)](https://github.com/daerubi/hermes-stack/actions/workflows/deploy-to-hf.yml)
-[![Keep-alive](https://img.shields.io/github/actions/workflow/status/daerubi/hermes-stack/keepalive.yml?style=flat-square&label=keep-alive)](https://github.com/daerubi/hermes-stack/actions/workflows/keepalive.yml)
-[![License: MIT](https://img.shields.io/github/license/daerubi/hermes-stack?style=flat-square)](LICENSE)
-[![Use this template](https://img.shields.io/badge/Use_this_template-8B6B4F?style=flat-square)](https://github.com/daerubi/hermes-stack/generate)
+[![Deploy](https://img.shields.io/badge/Deploy%20in%205%20min-Wizard_F5B301?style=for-the-badge&labelColor=201A14)](https://godde3s.github.io/hermes-stack/deploy.html)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Godde3s/hermes-stack/deploy-to-hf.yml?style=flat-square&label=deploy)](https://github.com/Godde3s/hermes-stack/actions/workflows/deploy-to-hf.yml)
+[![Keep-alive](https://img.shields.io/github/actions/workflow/status/Godde3s/hermes-stack/keepalive.yml?style=flat-square&label=keep-alive)](https://github.com/Godde3s/hermes-stack/actions/workflows/keepalive.yml)
+[![License: MIT](https://img.shields.io/github/license/Godde3s/hermes-stack?style=flat-square)](LICENSE)
+[![Use this template](https://img.shields.io/badge/Use_this_template-8B6B4F?style=flat-square)](https://github.com/Godde3s/hermes-stack/generate)
 
-[🌐 **Open the Landing Page**](https://daerubi.github.io/hermes-stack/) · [🚀 **Launch Deploy Wizard**](https://daerubi.github.io/hermes-stack/deploy.html) · [📖 Manual deploy](docs/manual-deploy.md)
+[🌐 **Open the Landing Page**](https://godde3s.github.io/hermes-stack/) · [🚀 **Launch Deploy Wizard**](https://godde3s.github.io/hermes-stack/deploy.html) · [📖 Manual deploy](docs/manual-deploy.md)
 
 </div>
 
@@ -43,7 +43,7 @@ Plus, built in:
 
 ### Way 1 — Web Wizard (easiest, Railway-style) ⭐
 
-1. Open **[the Deploy Wizard](https://daerubi.github.io/hermes-stack/deploy.html)**.
+1. Open **[the Deploy Wizard](https://godde3s.github.io/hermes-stack/deploy.html)**.
 2. Paste your GitHub PAT, Hugging Face **write** token and Telegram bot token — the wizard validates all of them live, generates strong passwords for you, creates the repo secrets, and starts the deploy.
 3. Watch the Action turn green → your Space is live. Done.
 
@@ -51,7 +51,7 @@ Plus, built in:
 
 ### Way 2 — GitHub only (no wizard)
 
-1. Click **[Use this template](https://github.com/daerubi/hermes-stack/generate)** → creates your own copy.
+1. Click **[Use this template](https://github.com/Godde3s/hermes-stack/generate)** → creates your own copy.
 2. In your new repo: **Settings → Secrets and variables → Actions**, add:
 
    | Secret | Value |
@@ -150,8 +150,8 @@ This project is designed to be a **good tenant** of the free tier — that is wh
 
 ## 📚 Docs
 
-- [Landing page](https://daerubi.github.io/hermes-stack/) — visual overview
-- [Deploy wizard](https://daerubi.github.io/hermes-stack/deploy.html) — guided setup
+- [Landing page](https://godde3s.github.io/hermes-stack/) — visual overview
+- [Deploy wizard](https://godde3s.github.io/hermes-stack/deploy.html) — guided setup
 - [Manual deploy (فارسی)](docs/manual-deploy.md)
 - [Upstream docs](https://github.com/NousResearch/hermes-agent) · [9Router](https://github.com/decolua/9router) · [OmniRouter](https://github.com/Godde3s/omnirouter)
 
@@ -169,7 +169,7 @@ MIT — see [LICENSE](LICENSE). Upstream projects keep their own licenses.
 
 ## 🇮🇷 راهنمای فارسی (خلاصه)
 
-**در ۵ دقیقه:** به [ویزارد استقرار](https://daerubi.github.io/hermes-stack/deploy.html) برو ← توکن GitHub، توکن Write هاگین‌فیس و توکن ربات تلگرام را وارد کن ← ویزارد همه Secrets را می‌سازد و دیپلوی را شروع می‌کند. بعد از سبز شدن اکشن، آدرس‌های سرویس‌ها در خلاصه‌ی ران هست.
+**در ۵ دقیقه:** به [ویزارد استقرار](https://godde3s.github.io/hermes-stack/deploy.html) برو ← توکن GitHub، توکن Write هاگین‌فیس و توکن ربات تلگرام را وارد کن ← ویزارد همه Secrets را می‌سازد و دیپلوی را شروع می‌کند. بعد از سبز شدن اکشن، آدرس‌های سرویس‌ها در خلاصه‌ی ران هست.
 
 **آدرس‌ها:** داشبورد روتر `/` · API روتر `/v1` · داشبورد ایجنت `/hermes/` · API ایجنت `/hermes-api/v1`
 

@@ -35,7 +35,7 @@ jobs:
           set -u
           if [ -z "${HF_USERNAME}" ] || [ -z "${HF_SPACE_NAME}" ]; then
             echo "HF_USERNAME / HF_SPACE_NAME not set yet — nothing to keep alive."
-            echo "Run the deploy wizard first: https://daerubi.github.io/hermes-stack/deploy.html"
+            echo "Run the deploy wizard first: https://godde3s.github.io/hermes-stack/deploy.html"
             exit 0
           fi
           REPO_ID="${HF_USERNAME}/${HF_SPACE_NAME}"
