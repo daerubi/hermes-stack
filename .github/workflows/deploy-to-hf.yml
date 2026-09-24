@@ -1,12 +1,6 @@
 name: Deploy to Hugging Face Space
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/deploy-to-hf.yml
-      - scripts/**
-      - space/**
   workflow_dispatch:
     inputs:
       dry_run:

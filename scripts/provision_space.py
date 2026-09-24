@@ -134,8 +134,9 @@ def main() -> int:
             exist_ok=True,
         )
     except Exception as e:
-        if "402" in str(e) and PRIVATE_SPACE:
-            print("::error:: Hugging Face rejected the private Space (HTTP 402). Free accounts must deploy a public Space; uncheck 'private' or upgrade the Hugging Face plan.")
+        if "402" in str(e):
+            print("::error:: Hugging Face rejected Space creation (HTTP 402). This account/token is not currently eligible to create a Space through the API.")
+            print("::error:: Create a public Docker Space manually at https://huggingface.co/new-space, then rerun this workflow so it can reuse that Space.")
             return 1
         print(f"::error:: Could not create or reuse Space {repo_id}: {type(e).__name__}: {e}")
         return 1
