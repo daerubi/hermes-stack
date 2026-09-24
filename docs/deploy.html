@@ -631,17 +631,21 @@ async function deploy(){
   const priv=$('privchk').checked;
   try{
     logC('🚀 Deploying Hermes Stack — everything runs from your own browser','st');
-    /* 1 — repo from template */
+    /* 1 — reuse an existing target repo, otherwise create one from the template. */
     const tpl=templateRepo();
-    logC('STEP 1/6 · Creating repo <'+repoFull+'> from template <'+tpl+'>','st');
+    logC('STEP 1/6 · Checking target repo <'+repoFull+'>','st');
+    let targetExists=false;
     try{
-      await gh('/repos/'+tpl+'/generate',{method:'POST',body:JSON.stringify({name:S.repoName,description:'🤖 Hermes Agent + 9Router + OmniRouter on a free Hugging Face Space — deployed via web wizard',private:false,include_all_branches:false})});
-      logC('repo created ✓','ok');
+      await gh('/repos/'+repoFull);
+      targetExists=true;
+      logC('target repo exists — reusing it ✓','ok');
     }catch(e){
-      if(/already exists/i.test(e.githubMessage||e.message)){
-        logC('repo already exists — reusing it','warn');
-        await gh('/repos/'+repoFull);
-      }else throw e;
+      if(e.status!==404)throw e;
+    }
+    if(!targetExists){
+      logC('creating repo from template <'+tpl+'>','st');
+      await gh('/repos/'+tpl+'/generate',{method:'POST',body:JSON.stringify({name:S.repoName,description:'Hermes Agent stack deployed via web wizard',private:false,include_all_branches:false})});
+      logC('repo created ✓','ok');
     }
     /* 2 — secrets */
     logC('STEP 2/6 · Fetching the secret-encryption public key','st');
