@@ -124,7 +124,7 @@ def main() -> int:
         return 1
 
     # ------------------------------------------------------ create repos
-    print(f"[1/5] Creating (or reusing) Space {repo_id} (sdk=docker, cpu-basic, {'private' if PRIVATE_SPACE else 'public'})…")
+    print(f"[1/5] Creating (or reusing) Space {repo_id} (sdk=docker, default hardware, {'private' if PRIVATE_SPACE else 'public'})…")
     try:
         url = api.create_repo(
             repo_id=repo_id,
@@ -132,7 +132,6 @@ def main() -> int:
             space_sdk="docker",
             private=PRIVATE_SPACE,
             exist_ok=True,
-            space_hardware="cpu-basic",
         )
     except Exception as e:
         if "402" in str(e) and PRIVATE_SPACE:
