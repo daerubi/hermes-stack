@@ -13,12 +13,6 @@ import time
 import traceback
 from pathlib import Path
 
-try:
-    from huggingface_hub import HfApi
-except ImportError:
-    print("::error:: huggingface_hub is not installed — pip install huggingface_hub")
-    sys.exit(1)
-
 # ---------------------------------------------------------------- config
 SPACE_SECRETS = [
     "TELEGRAM_BOT_TOKEN",
@@ -65,8 +59,8 @@ def check_env() -> tuple[str, str]:
         sys.exit(1)
     hf_user = env("HF_USERNAME")
     space_name = env("HF_SPACE_NAME")
-    if not space_name.replace("-", "").replace("_", "").isalnum():
-        print("::error:: HF_SPACE_NAME may only contain letters, digits, '-' and '_'")
+    if not space_name.replace("-", "").isalnum() or not 2 <= len(space_name) <= 96:
+        print("::error:: HF_SPACE_NAME must be 2-96 characters using letters, digits, and '-' only")
         sys.exit(1)
     return hf_user, space_name
 
@@ -82,8 +76,6 @@ def main() -> int:
     hf_user, space_name = check_env()
     repo_id = f"{hf_user}/{space_name}"
     backup_repo = env("BACKUP_REPO", f"{hf_user}/{space_name}-backup")
-
-    api = HfApi(token=env("HF_TOKEN"))
 
     print("=" * 62)
     print(f" Target Space  : https://huggingface.co/spaces/{repo_id}")
@@ -109,6 +101,13 @@ def main() -> int:
         )
         print("[dry-run] OK — workflow logic verified without touching Hugging Face.")
         return 0
+
+    try:
+        from huggingface_hub import HfApi
+    except ImportError:
+        print("::error:: huggingface_hub is not installed — pip install huggingface_hub")
+        return 1
+    api = HfApi(token=env("HF_TOKEN"))
 
     # ------------------------------------------------------------ whoami
     try:

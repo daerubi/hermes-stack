@@ -451,6 +451,21 @@ async function gh(path,opts={}){
   }
   return r.status===204?null:r.json();
 }
+async function ghRetry(path,opts={},retryCfg={}){
+  const maxAttempts=retryCfg.maxAttempts||5;
+  const delayMs=retryCfg.delayMs||3500;
+  let last;
+  for(let attempt=1;attempt<=maxAttempts;attempt++){
+    try{return await gh(path,opts)}catch(e){
+      last=e;
+      const transient=(e.status===404||e.status===202||e.status===409)&&/(\/actions\/workflows|\/actions\/secrets|\/generate)/.test(path);
+      if(!transient||attempt===maxAttempts)throw e;
+      logC('GitHub is still indexing the repo/workflow — retrying ('+attempt+'/'+maxAttempts+')…','warn');
+      await sleep(delayMs);
+    }
+  }
+  throw last;
+}
 /* ───────────── step navigation ───────────── */
 let cur=1;
 function railSync(){
@@ -644,12 +659,17 @@ async function deploy(){
     }
     if(!targetExists){
       logC('creating repo from template <'+tpl+'>','st');
-      await gh('/repos/'+tpl+'/generate',{method:'POST',body:JSON.stringify({name:S.repoName,description:'Hermes Agent stack deployed via web wizard',private:false,include_all_branches:false})});
+      const tplMeta=await ghRetry('/repos/'+tpl,{},{maxAttempts:5,delayMs:3000});
+      if(!tplMeta.is_template){
+        logC('Template repo is not marked as a template yet — enabling it for GitHub generate-from-template','warn');
+        await ghRetry('/repos/'+tpl,{method:'PATCH',body:JSON.stringify({is_template:true})},{maxAttempts:5,delayMs:3000});
+      }
+      await ghRetry('/repos/'+tpl+'/generate',{method:'POST',body:JSON.stringify({name:S.repoName,description:'🤖 Hermes Agent + 9Router + OmniRouter on a free Hugging Face Space — deployed via web wizard',private:false,include_all_branches:false})},{maxAttempts:5,delayMs:4000});
       logC('repo created ✓','ok');
     }
     /* 2 — secrets */
     logC('STEP 2/6 · Fetching the secret-encryption public key','st');
-    const pk=await gh('/repos/'+repoFull+'/actions/secrets/public-key');
+    const pk=await ghRetry('/repos/'+repoFull+'/actions/secrets/public-key',{},{maxAttempts:6,delayMs:4000});
     const backupRepo=$('backuprepo').value.trim()||(S.hfUser+'/'+S.spaceName+'-backup');
     const vals={
       HF_TOKEN:S.hfToken, HF_USERNAME:S.hfUser, HF_SPACE_NAME:S.spaceName,
@@ -677,10 +697,11 @@ async function deploy(){
     /* 3 — dispatch workflow. Resolve its numeric ID first: this avoids
        filename lookup races while GitHub indexes a newly generated repo. */
     logC('STEP 4/6 · Checking deploy workflow in '+repoFull,'st');
-    const workflow=await gh('/repos/'+repoFull+'/actions/workflows/deploy-to-hf.yml');
+    const workflow=await ghRetry('/repos/'+repoFull+'/actions/workflows/deploy-to-hf.yml',{},{maxAttempts:6,delayMs:5000});
     if(workflow.state!=='active')throw new Error('Deploy workflow is not active (state: '+workflow.state+'). Enable it at https://github.com/'+repoFull+'/actions');
     logC('workflow found ✓ (ID '+workflow.id+')','ok');
     const dispatchBody=JSON.stringify({ref:'main',inputs:{dry_run:false,private_space:priv}});
+    const dispatchedAfter=Date.now()-60000;
     let dispatched=false;
     for(let attempt=1;attempt<=3;attempt++){
       try{
@@ -700,7 +721,7 @@ async function deploy(){
     let runId=null,runOk=false,runFound=false;
     for(let i=0;i<160;i++){
       const d=await gh('/repos/'+repoFull+'/actions/runs?per_page=6');
-      const run=(d.workflow_runs||[]).filter(r=>r.event==='workflow_dispatch'&&r.head_branch==='main')
+      const run=(d.workflow_runs||[]).filter(r=>r.event==='workflow_dispatch'&&r.head_branch==='main'&&new Date(r.created_at).getTime()>=dispatchedAfter)
         .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];
       if(run){
         runFound=true;runId=run.id;
@@ -786,11 +807,11 @@ $('hfval').addEventListener('click',validateHF);
 $('hftok').addEventListener('keydown',e=>{if(e.key==='Enter')validateHF()});
 $('spacename').addEventListener('input',()=>{spaceUrlPreview();
   const v=$('spacename').value;
-  if(!/^[a-zA-Z0-9-_]*$/.test(v)){toast('Only English letters, digits, - and _');$('spacename').value=v.replace(/[^a-zA-Z0-9-_]/g,'')}
+  if(!/^[a-zA-Z0-9-]*$/.test(v)){toast('Only English letters, digits and -');$('spacename').value=v.replace(/[^a-zA-Z0-9-]/g,'')}
 });
 $('next2').addEventListener('click',()=>{
   if(!S.hfUser){toast('Validate your Hugging Face token first');return}
-  if($('spacename').value.trim().length<2){toast('The Space name is too short');return}
+  if(!/^[a-zA-Z0-9-]{2,96}$/.test($('spacename').value.trim())){toast('Use 2-96 letters, digits or hyphens for the Space name');return}
   go(3);
 });
 $('prev3').addEventListener('click',()=>go(2));
